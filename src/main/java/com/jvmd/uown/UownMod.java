@@ -1,5 +1,6 @@
 package com.jvmd.uown;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 
 import net.minecraftforge.fml.RegistryObject;
@@ -12,8 +13,14 @@ import net.minecraft.item.Item;
 @Mod("uown")
 public class UownMod {
 
+    public final static Minecraft mc;
+    static {
+        mc = Minecraft.getInstance();
+    }
+
     public UownMod() {
         ModItems.register();
+
     }
 
     public static class ModItems {

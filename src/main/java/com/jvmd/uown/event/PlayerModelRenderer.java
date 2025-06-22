@@ -1,6 +1,8 @@
 package com.jvmd.uown.event;
 
 import com.jvmd.uown.UownMod;
+import com.jvmd.uown.api.render.RenderModelManger;
+import com.jvmd.uown.api.user.UsersRenderOwnManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -27,25 +29,14 @@ public class PlayerModelRenderer {
 
         MatrixStack poseStack = event.getMatrixStack();
         IRenderTypeBuffer buffer = event.getBuffers();
-        
-        poseStack.pushPose();
 
-        poseStack.translate(0.0D, player.getBbHeight() + 1D, 0.0D);
-        poseStack.scale(1.5f, 1.5f, 1.5f);
-
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-
-        ItemStack stack = new ItemStack(UownMod.ModItems.SERVKEEPER_GREEN.get());
-
-        itemRenderer.renderStatic(
-                stack,
-                ItemCameraTransforms.TransformType.GROUND,
-                15728880,
-                OverlayTexture.NO_OVERLAY,
-                poseStack,
-                buffer
-        );
-
-        poseStack.popPose();
+        EOwn own = EOwn.GREEN;
+        try {
+            own = UsersRenderOwnManager.getCurrentUser().getOwn();
+            if (own == null) own = EOwn.GREEN;
+        } catch (Exception e) {
+            // log error if needed
+        }
+        RenderModelManger.renderModel(poseStack, entity, buffer , own.item , 0D, entity.getBbHeight()+1D, 0D, 1.5f);
     }
 }

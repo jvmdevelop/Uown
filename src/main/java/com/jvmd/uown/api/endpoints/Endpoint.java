@@ -26,38 +26,20 @@ public interface Endpoint {
      * @throws IOException
      */
     default String getResponse(String[] params) throws IOException {
-        if (params.length == 0) {
-            return "";
+        String url = getName();
+        if (url.contains("$")) {
+            url = String.format(url.replace("$", "%s"), (Object[]) params);
+        } else if (params.length > 0) {
+            StringBuilder sb = new StringBuilder(url);
+            sb.append(url.contains("?") ? "&" : "?");
+            for (int i = 0; i < params.length; i++) {
+                if (i > 0) sb.append("&");
+                sb.append("param").append(i).append("=").append(params[i]);
+            }
+            url = sb.toString();
         }
-
-        String[] split = getName().split("\\?");
-        if (split.length < 2) {
-            throw new IllegalArgumentException("Invalid URL format: missing parameters");
-        }
-
-        String baseUrl = split[0];
-        String[] queryParts = split[1].split("&");
-
-        List<String> paramNames = Arrays.stream(queryParts)
-                .map(part -> part.split("=")[0])
-                .collect(Collectors.toList());
-
-        LOG.info("Request URL: " + getName());
-        LOG.info("Request Params: " + paramNames);
-
-        StringBuilder fullUrl = new StringBuilder(baseUrl);
-        for (int i = 0; i < paramNames.size(); i++) {
-            String paramValue = (i < params.length) ? params[i] : "";
-            LOG.info("Request Param: {}", paramValue);
-            fullUrl.append(i == 0 ? "?" : "&")
-                    .append(paramNames.get(i))
-                    .append("=")
-                    .append(paramValue);
-        }
-
-
-        URLConnection connection = HttpUtil.getReadingConnection(fullUrl.toString());
-        return HttpUtil.readContent(connection);
+        LOG.info("Request URL: {}", url);
+        return com.jvmd.uown.util.HttpUtil.get(url);
     }
 
 }

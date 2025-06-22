@@ -119,7 +119,12 @@ dependencies {
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+// https://mvnrepository.com/artifact/org.projectlombok/lombok
     implementation("org.projectlombok:lombok:1.18.38")
+    compileOnly 'org.projectlombok:lombok:1.18.38' // Replace VERSION with the desired Lombok version
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
@@ -133,6 +138,7 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -166,6 +172,7 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Vendor'   : mod_authors,
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
+    }
 }
 
 // This is the preferred method to reobfuscate your jar file

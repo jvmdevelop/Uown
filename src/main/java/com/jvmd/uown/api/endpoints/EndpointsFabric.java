@@ -9,7 +9,6 @@ import java.util.HashMap;
 public class EndpointsFabric {
 
     private static final String url = ConnectionConfig.getHost() + ":" + ConnectionConfig.getPort();
-    private static final String token = ConnectionConfig.getToken();
 
     private static HashMap<String, Endpoint> endpoints = new HashMap<>();
 
@@ -26,11 +25,6 @@ public class EndpointsFabric {
 
     public static String getResponse(String endpointName, String... params) throws IOException {
         Endpoint endpoint = getEndpoint(endpointName);
-        String[] paramArray = new String[params.length + 1];
-        paramArray[0] = token;
-        for (int i = 1; i < params.length; i++) {
-            paramArray[i] = params[i];
-        }
 
         return endpoint.getResponse(params);
     }
