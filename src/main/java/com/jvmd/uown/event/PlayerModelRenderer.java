@@ -2,6 +2,7 @@ package com.jvmd.uown.event;
 
 import com.jvmd.uown.UownMod;
 import com.jvmd.uown.api.render.RenderModelManger;
+import com.jvmd.uown.api.user.EOwn;
 import com.jvmd.uown.api.user.UsersRenderOwnManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;

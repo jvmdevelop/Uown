@@ -7,6 +7,7 @@ import com.jvmd.uown.api.user.UsersRenderOwnManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -20,6 +21,7 @@ public class OtherPlayersRenderer {
 
     @SubscribeEvent
     public static void renderPlayers(RenderLivingEvent.Pre<PlayerEntity, ?> event) {
+        if (!(event.getEntity() instanceof PlayerEntity)) return;
         PlayerEntity entity = (PlayerEntity) event.getEntity();
         if (entity == UownMod.mc.player) return;
         String name = entity.getGameProfile().getName();
