@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     }
 
 version = mod_version
@@ -112,6 +113,11 @@ repositories {
     // }
 }
 
+configurations {
+    shade
+    implementation.extendsFrom shade
+}
+
 dependencies {
     // Specify the version of Minecraft to use.
     // Any artifact can be supplied so long as it has a "userdev" classifier artifact and is a compatible patcher artifact.
@@ -139,6 +145,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    shade 'com.squareup.okhttp3:okhttp:4.11.0'
+    shade 'org.slf4j:slf4j-api:2.0.7'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -174,6 +182,24 @@ tasks.named('jar', Jar).configure {
         ])
     }
     finalizedBy 'reobfJar'
+}
+
+jar {
+    archiveClassifier = 'slim'
+}
+
+shadowJar {
+    archiveClassifier = ''
+    configurations = [project.configurations.shade]
+    relocate 'okhttp3', 'com.natamus.collective.okhttp3'
+    relocate 'org.slf4j', 'com.natamus.collective.slf4j'
+    finalizedBy 'reobfShadowJar'
+}
+
+assemble.dependsOn shadowJar
+
+reobf {
+    shadowJar {}
 }
 
 // This is the preferred method to reobfuscate your jar file
