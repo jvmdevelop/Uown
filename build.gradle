@@ -111,6 +111,7 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+
 }
 
 configurations {
@@ -147,6 +148,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     shade 'com.squareup.okhttp3:okhttp:4.11.0'
     shade 'org.slf4j:slf4j-api:2.0.7'
+
+
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

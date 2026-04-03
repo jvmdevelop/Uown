@@ -5,24 +5,23 @@ import com.jvmd.uown.api.render.RenderModelManger;
 import com.jvmd.uown.api.user.EOwn;
 import com.jvmd.uown.api.user.UsersRenderOwnManager;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.io.IOException;
-
 @Mod.EventBusSubscriber(modid = "uown", value = Dist.CLIENT)
 public class OtherPlayersRenderer {
 
     @SubscribeEvent
     public static void renderPlayers(RenderLivingEvent.Pre<PlayerEntity, ?> event) {
-        if (!(event.getEntity() instanceof PlayerEntity)) return;
-        PlayerEntity entity = (PlayerEntity) event.getEntity();
+        // Фикс: NPC с серверных плагинов — это PlayerEntity, но не AbstractClientPlayerEntity
+        if (!(event.getEntity() instanceof AbstractClientPlayerEntity)) return;
+        AbstractClientPlayerEntity entity = (AbstractClientPlayerEntity) event.getEntity();
         if (entity == UownMod.mc.player) return;
         String name = entity.getGameProfile().getName();
         EOwn playerOwn = EOwn.GREEN;
@@ -35,6 +34,15 @@ public class OtherPlayersRenderer {
         MatrixStack poseStack = event.getMatrixStack();
         IRenderTypeBuffer buffer = event.getBuffers();
         RenderModelManger.renderModel(poseStack, entity, buffer , playerOwn.item, 0D, entity.getBbHeight()+1D, 0D, 1.5f);
+    }
+
+    @SubscribeEvent
+    public static void renderMonsters(RenderLivingEvent.Pre<MonsterEntity, ?> event) {
+        if (!(event.getEntity() instanceof MonsterEntity)) return;
+        MonsterEntity entity = (MonsterEntity) event.getEntity();
+        MatrixStack poseStack = event.getMatrixStack();
+        IRenderTypeBuffer buffer = event.getBuffers();
+        RenderModelManger.renderModel(poseStack, entity, buffer, EOwn.RED.item, 0D, entity.getBbHeight() + 1D, 0D, 1.5f);
     }
 
 }
